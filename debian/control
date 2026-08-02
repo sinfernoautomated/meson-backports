@@ -1,0 +1,24 @@
+Source: meson
+Section: devel
+Priority: optional
+Maintainer: soul-inferno <nofunction@gmx.net>
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-python,
+ python3,
+ python3-setuptools,
+ ninja-build
+Standards-Version: 4.6.2
+Homepage: https://mesonbuild.com
+Rules-Requires-Root: no
+
+Package: meson
+Architecture: all
+Multi-Arch: foreign
+Depends:
+ ${misc:Depends},
+ ${python3:Depends},
+ ninja-build,
+ python3-setuptools
+Description: high-performance build system
+ Meson is a fast and user-friendly build system.
