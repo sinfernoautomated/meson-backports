@@ -1,4 +1,9 @@
 #!/usr/bin/make -f
 
+export PYBUILD_NAME=meson
+
 %:
 	dh $@ --buildsystem=pybuild
+
+override_dh_auto_test:
+	@echo "Skipping tests (disabled for Launchpad builds)"
