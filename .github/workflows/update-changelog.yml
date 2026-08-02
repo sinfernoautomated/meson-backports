@@ -40,7 +40,7 @@ jobs:
           if [ ! -s debian/changelog ] || ! dpkg-parsechangelog >/dev/null 2>&1; then
             echo "debian/changelog fehlt, ist leer oder ungültig. Erstelle eine initiale Datei..."
             rm -f debian/changelog
-            dch --create -v "${{ env.LATEST_VERSION }}-1ubuntu1" -p --package meson "Initial upstream release sync for version ${{ env.LATEST_VERSION }}"
+            dch --create -v "${{ env.LATEST_VERSION }}-1" -p --package meson "Initial upstream release sync for version ${{ env.LATEST_VERSION }}"
             dch -r -D noble ""
           else
             CURRENT_VERSION=$(dpkg-parsechangelog -S Version | cut -d'-' -f1)
@@ -48,8 +48,8 @@ jobs:
             
             if [ "${{ env.LATEST_VERSION }}" != "$CURRENT_VERSION" ]; then
               echo "Neue Version entdeckt. Aktualisiere Changelog..."
-              dch -v "${{ env.LATEST_VERSION }}-1ubuntu1" "Automatic update to upstream release ${{ env.LATEST_VERSION }}"
-              dch -r ""
+              dch -v "${{ env.LATEST_VERSION }}-1" "Automatic update to upstream release ${{ env.LATEST_VERSION }}"
+              dch -r -D noble ""
             else
               echo "Changelog ist bereits auf dem neuesten Stand."
             fi
