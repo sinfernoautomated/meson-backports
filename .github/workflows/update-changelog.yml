@@ -41,7 +41,7 @@ jobs:
             echo "debian/changelog fehlt, ist leer oder ungültig. Erstelle eine initiale Datei..."
             rm -f debian/changelog
             dch --create -v "${{ env.LATEST_VERSION }}-1ubuntu1" -p --package meson "Initial upstream release sync for version ${{ env.LATEST_VERSION }}"
-            dch -r ""
+            dch -r -D noble ""
           else
             CURRENT_VERSION=$(dpkg-parsechangelog -S Version | cut -d'-' -f1)
             echo "Aktuelle lokale Version: $CURRENT_VERSION"
