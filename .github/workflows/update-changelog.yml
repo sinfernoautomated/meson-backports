@@ -1,0 +1,61 @@
+name: Update Debian Changelog file for Meson backporting on launchpad
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Prüft täglich um 02:00 Uhr nachts
+  workflow_dispatch: # Erlaubt dir, das Skript jederzeit manuell im Browser zu starten
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+    
+    # Notwendige Rechte, damit der Bot in dein Repo schreiben darf
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Debian Packaging Tools
+        run: sudo apt-get update && sudo apt-get install -y devscripts dpkg-dev jq
+
+      - name: Fetch latest Meson Release from GitHub API
+        id: fetch_upstream
+        run: |
+          # Holt den neuesten Release-Tag von den offiziellen Meson-Entwicklern
+          LATEST_TAG=$(curl -s https://api.github.com/repos/mesonbuild/meson/releases/latest | jq -r .tag_name)
+          # Entfernt ein eventuelles 'v' vor der Versionsnummer (z.B. v1.12.0 -> 1.12.0)
+          VERSION=${LATEST_TAG#v}
+          echo "LATEST_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Gefundene Upstream-Version: $VERSION"
+
+      - name: Get current version from debian/changelog
+        id: get_local
+        run: |
+          # Liest die aktuelle Version aus und schneidet das Ubuntu-Suffix ab (alles nach dem Bindestrich)
+          CURRENT_VERSION=$(dpkg-parsechangelog -S Version | cut -d'-' -f1)
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+          echo "Aktuelle lokale Version: $CURRENT_VERSION"
+
+      - name: Update Changelog (If new release exists)
+        if: env.LATEST_VERSION != env.CURRENT_VERSION
+        run: |
+          # Trage hier deine Daten ein, damit sie im Changelog als Maintainer auftauchen
+          export DEBEMAIL="deine-email@beispiel.de"
+          export DEBFULLNAME="Dein Name"
+          
+          # Erstellt den neuen Eintrag ganz oben in der changelog
+          # Das Suffix -1ubuntu1 sorgt dafür, dass Launchpad es korrekt als Ubuntu-Paket erkennt
+          dch -v "${{ env.LATEST_VERSION }}-1ubuntu1" "Automatic update to upstream release ${{ env.LATEST_VERSION }}"
+          
+          # Ändert den Status von UNRELEASED auf den Release-Namen (wichtig für Launchpad)
+          dch -r "" 
+
+      - name: Commit and Push changes
+        if: env.LATEST_VERSION != env.CURRENT_VERSION
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(changelog): bump version to ${{ env.LATEST_VERSION }}"
+          branch: main
+          file_pattern: debian/changelog
