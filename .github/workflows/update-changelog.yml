@@ -27,7 +27,7 @@ jobs:
           echo "LATEST_VERSION=$VERSION" >> $GITHUB_ENV
           echo "Gefundene Upstream-Version: $VERSION"
 
-- name: Create or Update Debian Changelog
+      - name: Create or Update Debian Changelog
         run: |
           # Trage hier deine echten Daten ein
           export DEBEMAIL="deine-echte-email@adresse.de"
