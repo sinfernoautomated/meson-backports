@@ -42,8 +42,8 @@ jobs:
         if: env.LATEST_VERSION != env.CURRENT_VERSION
         run: |
           # Trage hier deine Daten ein, damit sie im Changelog als Maintainer auftauchen
-          export DEBEMAIL="deine-email@beispiel.de"
-          export DEBFULLNAME="Dein Name"
+          export DEBEMAIL="nofunction@gmx.net"
+          export DEBFULLNAME="soul-inferno"
           
           # Erstellt den neuen Eintrag ganz oben in der changelog
           # Das Suffix -1ubuntu1 sorgt dafür, dass Launchpad es korrekt als Ubuntu-Paket erkennt
