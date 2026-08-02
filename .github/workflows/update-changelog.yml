@@ -30,8 +30,8 @@ jobs:
       - name: Create or Update Debian Changelog
         run: |
           # Trage hier deine echten Daten ein
-          export DEBEMAIL="deine-echte-email@adresse.de"
-          export DEBFULLNAME="Dein Echter Name"
+          export DEBEMAIL="nofunction@gmx.net"
+          export DEBFULLNAME="soul-inferno"
           
           # Sicherstellen, dass das debian-Verzeichnis existiert
           mkdir -p debian
